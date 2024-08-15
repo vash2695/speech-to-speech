@@ -4,3 +4,4 @@ torch==2.4.0
 transformers==4.30.2  # Keep transformers for Whisper STT (use the latest version or the one compatible with your setup)
 numpy==1.21.0  # Add numpy explicitly as it's used in the code
 rich==10.12.0  # Add rich explicitly for console output
+python-dotenv==0.19.1
