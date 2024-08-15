@@ -5,7 +5,7 @@ from queue import Queue
 from dataclasses import dataclass, field
 import sounddevice as sd
 from transformers import HfArgumentParser
-
+import logging
 
 @dataclass
 class ListenAndPlayArguments:
@@ -46,6 +46,8 @@ class ListenAndPlayArguments:
         }
     )
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def listen_and_play(
     send_rate=16000,
@@ -113,22 +115,27 @@ def listen_and_play(
         recv_thread = threading.Thread(target=recv, args=(stop_event, recv_queue))
         recv_thread.start()
         
+        logging.info("Recording and streaming...")
         input("Press Enter to stop...")
 
     except KeyboardInterrupt:
-        print("Finished streaming.")
-
+        logging.info("Received stop signal. Shutting down...")
+    except socket.error as e:
+        logging.error(f"Socket error occurred: {e}")
+    except sd.PortAudioError as e:
+        logging.error(f"Audio device error occurred: {e}")
     finally:
         stop_event.set()
         recv_thread.join()
         send_thread.join()
         send_socket.close()
         recv_socket.close()
-        print("Connection closed.")
-
+        logging.info("Connection closed.")
 
 if __name__ == "__main__":
     parser = HfArgumentParser((ListenAndPlayArguments,))
     listen_and_play_kwargs, = parser.parse_args_into_dataclasses()
-    listen_and_play(**vars(listen_and_play_kwargs))
-
+    try:
+        listen_and_play(**vars(listen_and_play_kwargs))
+    except Exception as e:
+        logging.exception(f"An unexpected error occurred: {e}")
