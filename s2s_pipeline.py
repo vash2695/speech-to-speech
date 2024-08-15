@@ -16,17 +16,12 @@ import requests
 
 import numpy as np
 import torch
-import nltk
-from nltk.tokenize import sent_tokenize
 from rich.console import Console
 from transformers import (
-    AutoModelForCausalLM,
     AutoModelForSpeechSeq2Seq,
     AutoProcessor,
     AutoTokenizer,
-    HfArgumentParser,
-    pipeline,
-    TextIteratorStreamer
+    HfArgumentParser
 )
 
 
@@ -36,11 +31,6 @@ from utils import (
     next_power_of_2
 )
 
-# Ensure that the necessary NLTK resources are available
-try:
-    nltk.data.find('tokenizers/punkt_tab')
-except LookupError:
-    nltk.download('punkt_tab')
 
 # caching allows ~50% compilation time reduction
 # see https://docs.google.com/document/d/1y5CRfMLdwEoF1nTk9q8qEu1mgMUuUtvhklPKJ2emLU8/edit#heading=h.o2asbxsrp1ma
@@ -668,8 +658,8 @@ def main():
             socket_sender_kwargs, 
             vad_handler_kwargs, 
             whisper_stt_handler_kwargs, 
-            language_model_handler_kwargs, 
-            parler_tts_handler_kwargs,
+            openai_lm_handler_kwargs, 
+            elevenlabs_tts_handler_kwargs,
         ) = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
         # Parse arguments from command line if no JSON file is provided
@@ -679,8 +669,8 @@ def main():
             socket_sender_kwargs, 
             vad_handler_kwargs, 
             whisper_stt_handler_kwargs, 
-            language_model_handler_kwargs, 
-            parler_tts_handler_kwargs,
+            openai_lm_handler_kwargs, 
+            elevenlabs_tts_handler_kwargs,
         ) = parser.parse_args_into_dataclasses()
 
     # 1. Handle logger
