@@ -13,6 +13,7 @@ from time import perf_counter
 
 import openai
 import requests
+import config
 
 import numpy as np
 import torch
@@ -491,23 +492,23 @@ class WhisperSTTHandler(BaseHandler):
 @dataclass
 class OpenAILanguageModelHandlerArguments:
     openai_api_key: str = field(
-        default="",
+        default=config.OPENAI_API_KEY,
         metadata={"help": "OpenAI API key"}
     )
     model: str = field(
-        default="gpt-3.5-turbo",
+        default=config.OPENAI_MODEL,
         metadata={"help": "OpenAI model to use"}
     )
     max_tokens: int = field(
-        default=150,
+        default=config.OPENAI_MAX_TOKENS,
         metadata={"help": "Maximum number of tokens to generate"}
     )
     temperature: float = field(
-        default=0.7,
+        default=config.OPENAI_TEMPERATURE,
         metadata={"help": "Sampling temperature"}
     )
     chat_size: int = field(
-        default=1,
+        default=config.CHAT_HISTORY_SIZE,
         metadata={"help": "Number of interactions assistant-user to keep for the chat. None for no limitations."}
     )
 
@@ -558,15 +559,15 @@ class OpenAILanguageModelHandler(BaseHandler):
 @dataclass
 class ElevenlabsTTSHandlerArguments:
     elevenlabs_api_key: str = field(
-        default="",
+        default=config.ELEVENLABS_API_KEY,
         metadata={"help": "Elevenlabs API key"}
     )
     voice_id: str = field(
-        default="21m00Tcm4TlvDq8ikWAM",
+        default=config.ELEVENLABS_VOICE_ID,
         metadata={"help": "Elevenlabs voice ID"}
     )
     model_id: str = field(
-        default="eleven_monolingual_v1",
+        default=config.ELEVENLABS_MODEL_ID,
         metadata={"help": "Elevenlabs model ID"}
     )
     chunk_size: int = field(
