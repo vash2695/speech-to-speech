@@ -1,4 +1,4 @@
-# Speech To Speech: an effort for an open-sourced and modular GPT4-o
+# Speech To Speech
 
 
 ## 📖 Quick Index
